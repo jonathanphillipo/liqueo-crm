@@ -1,30 +1,25 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core"
+import { pgTable, text, integer, timestamp, uuid } from "drizzle-orm/pg-core"
 import { companiesTable } from "./companies-schema"
 import { contactsTable } from "./contacts-schema"
 
-export const dealsTable = sqliteTable("deals", {
-  id: text("id").primaryKey(),
+export const dealsTable = pgTable("deals", {
+  id: uuid("id").defaultRandom().primaryKey(),
   title: text("title").notNull(),
   value: integer("value").notNull(),
   stage: text("stage").notNull().default("prospecting"),
   probability: integer("probability").default(0),
-  expectedCloseDate: integer("expected_close_date", { mode: "timestamp" }),
-  actualCloseDate: integer("actual_close_date", { mode: "timestamp" }),
-  companyId: text("company_id").references(() => companiesTable.id, {
+  expectedCloseDate: timestamp("expected_close_date"),
+  actualCloseDate: timestamp("actual_close_date"),
+  companyId: uuid("company_id").references(() => companiesTable.id, {
     onDelete: "set null",
   }),
-  contactId: text("contact_id").references(() => contactsTable.id, {
+  contactId: uuid("contact_id").references(() => contactsTable.id, {
     onDelete: "set null",
   }),
   description: text("description"),
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .notNull()
-    .$defaultFn(() => new Date()),
-  updatedAt: integer("updated_at", { mode: "timestamp" })
-    .notNull()
-    .$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 })
 
 export type InsertDeal = typeof dealsTable.$inferInsert
 export type SelectDeal = typeof dealsTable.$inferSelect
-

@@ -8,19 +8,14 @@ import {
 } from "@/db/schema/companies-schema"
 import { ActionState } from "@/types"
 import { eq, desc } from "drizzle-orm"
-import { generateId } from "@/lib/utils"
 
 export async function createCompanyAction(
   company: Omit<InsertCompany, "id" | "createdAt" | "updatedAt">
 ): Promise<ActionState<SelectCompany>> {
   try {
-    const id = generateId()
     const [newCompany] = await db
       .insert(companiesTable)
-      .values({
-        ...company,
-        id,
-      })
+      .values(company)
       .returning()
 
     return {
@@ -119,4 +114,3 @@ export async function deleteCompanyAction(
     return { isSuccess: false, message: "Failed to delete company" }
   }
 }
-

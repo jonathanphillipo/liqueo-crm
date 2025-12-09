@@ -8,19 +8,14 @@ import {
 } from "@/db/schema/contacts-schema"
 import { ActionState } from "@/types"
 import { eq, desc } from "drizzle-orm"
-import { generateId } from "@/lib/utils"
 
 export async function createContactAction(
   contact: Omit<InsertContact, "id" | "createdAt" | "updatedAt">
 ): Promise<ActionState<SelectContact>> {
   try {
-    const id = generateId()
     const [newContact] = await db
       .insert(contactsTable)
-      .values({
-        ...contact,
-        id,
-      })
+      .values(contact)
       .returning()
 
     return {
@@ -119,4 +114,3 @@ export async function deleteContactAction(
     return { isSuccess: false, message: "Failed to delete contact" }
   }
 }
-

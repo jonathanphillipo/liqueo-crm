@@ -1,14 +1,14 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core"
+import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
 import { companiesTable } from "./companies-schema"
 
-export const contactsTable = sqliteTable("contacts", {
-  id: text("id").primaryKey(),
+export const contactsTable = pgTable("contacts", {
+  id: uuid("id").defaultRandom().primaryKey(),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   email: text("email"),
   phone: text("phone"),
   jobTitle: text("job_title"),
-  companyId: text("company_id").references(() => companiesTable.id, {
+  companyId: uuid("company_id").references(() => companiesTable.id, {
     onDelete: "set null",
   }),
   address: text("address"),
@@ -17,14 +17,9 @@ export const contactsTable = sqliteTable("contacts", {
   zipCode: text("zip_code"),
   country: text("country"),
   notes: text("notes"),
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .notNull()
-    .$defaultFn(() => new Date()),
-  updatedAt: integer("updated_at", { mode: "timestamp" })
-    .notNull()
-    .$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 })
 
 export type InsertContact = typeof contactsTable.$inferInsert
 export type SelectContact = typeof contactsTable.$inferSelect
-

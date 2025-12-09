@@ -1,7 +1,7 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core"
+import { pgTable, text, integer, timestamp, uuid } from "drizzle-orm/pg-core"
 
-export const companiesTable = sqliteTable("companies", {
-  id: text("id").primaryKey(),
+export const companiesTable = pgTable("companies", {
+  id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
   industry: text("industry"),
   website: text("website"),
@@ -15,14 +15,9 @@ export const companiesTable = sqliteTable("companies", {
   employeeCount: integer("employee_count"),
   revenue: integer("revenue"),
   description: text("description"),
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .notNull()
-    .$defaultFn(() => new Date()),
-  updatedAt: integer("updated_at", { mode: "timestamp" })
-    .notNull()
-    .$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 })
 
 export type InsertCompany = typeof companiesTable.$inferInsert
 export type SelectCompany = typeof companiesTable.$inferSelect
-

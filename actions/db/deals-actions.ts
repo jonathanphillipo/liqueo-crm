@@ -4,19 +4,14 @@ import { db } from "@/db/db"
 import { InsertDeal, SelectDeal, dealsTable } from "@/db/schema/deals-schema"
 import { ActionState } from "@/types"
 import { eq, desc } from "drizzle-orm"
-import { generateId } from "@/lib/utils"
 
 export async function createDealAction(
   deal: Omit<InsertDeal, "id" | "createdAt" | "updatedAt">
 ): Promise<ActionState<SelectDeal>> {
   try {
-    const id = generateId()
     const [newDeal] = await db
       .insert(dealsTable)
-      .values({
-        ...deal,
-        id,
-      })
+      .values(deal)
       .returning()
 
     return {
@@ -113,4 +108,3 @@ export async function deleteDealAction(id: string): Promise<ActionState<void>> {
     return { isSuccess: false, message: "Failed to delete deal" }
   }
 }
-

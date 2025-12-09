@@ -8,19 +8,14 @@ import {
 } from "@/db/schema/activities-schema"
 import { ActionState } from "@/types"
 import { eq, desc } from "drizzle-orm"
-import { generateId } from "@/lib/utils"
 
 export async function createActivityAction(
   activity: Omit<InsertActivity, "id" | "createdAt" | "updatedAt">
 ): Promise<ActionState<SelectActivity>> {
   try {
-    const id = generateId()
     const [newActivity] = await db
       .insert(activitiesTable)
-      .values({
-        ...activity,
-        id,
-      })
+      .values(activity)
       .returning()
 
     return {
@@ -121,4 +116,3 @@ export async function deleteActivityAction(
     return { isSuccess: false, message: "Failed to delete activity" }
   }
 }
-
