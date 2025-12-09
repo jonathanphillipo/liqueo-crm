@@ -1,0 +1,501 @@
+import { db } from "./db"
+import {
+  companiesTable,
+  contactsTable,
+  dealsTable,
+  activitiesTable,
+} from "./schema"
+
+function generateId(): string {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+}
+
+async function seed() {
+  console.log("Seeding database with financial services data...")
+
+  // Clear existing data
+  await db.delete(activitiesTable)
+  await db.delete(dealsTable)
+  await db.delete(contactsTable)
+  await db.delete(companiesTable)
+
+  // Create companies - Asset Managers, Wealth Managers, and System Vendors
+  const companies = [
+    {
+      id: generateId(),
+      name: "BlackRock",
+      industry: "Asset Management",
+      website: "https://blackrock.com",
+      phone: "+1-212-810-5300",
+      email: "institutional@blackrock.com",
+      address: "55 East 52nd Street",
+      city: "New York",
+      state: "NY",
+      zipCode: "10055",
+      country: "USA",
+      employeeCount: 19000,
+      revenue: 17500000000,
+      description: "World's largest asset manager with $10 trillion AUM. Uses Aladdin platform.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      name: "Vanguard",
+      industry: "Asset Management",
+      website: "https://vanguard.com",
+      phone: "+1-610-669-1000",
+      email: "institutional@vanguard.com",
+      address: "100 Vanguard Boulevard",
+      city: "Malvern",
+      state: "PA",
+      zipCode: "19355",
+      country: "USA",
+      employeeCount: 17600,
+      revenue: 7600000000,
+      description: "Pioneer in index investing with $8.1 trillion AUM. Evaluating OMS solutions.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      name: "UBS Wealth Management",
+      industry: "Wealth Management",
+      website: "https://ubs.com",
+      phone: "+41-44-234-1111",
+      email: "wm-technology@ubs.com",
+      address: "Bahnhofstrasse 45",
+      city: "Zurich",
+      state: "ZH",
+      zipCode: "8001",
+      country: "Switzerland",
+      employeeCount: 72000,
+      revenue: 34000000000,
+      description: "Global wealth manager with $4 trillion client assets. Charles River user.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      name: "Charles River Development",
+      industry: "FinTech - IBOR/OMS",
+      website: "https://crd.com",
+      phone: "+1-781-622-1000",
+      email: "sales@crd.com",
+      address: "50 Summer Street",
+      city: "Burlington",
+      state: "MA",
+      zipCode: "01803",
+      country: "USA",
+      employeeCount: 1200,
+      revenue: 450000000,
+      description: "State Street subsidiary. Leading Investment Management Solution (IMS) provider.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      name: "SimCorp",
+      industry: "FinTech - IBOR/OMS",
+      website: "https://simcorp.com",
+      phone: "+45-35-44-88-00",
+      email: "info@simcorp.com",
+      address: "Weidekampsgade 16",
+      city: "Copenhagen",
+      state: "",
+      zipCode: "2300",
+      country: "Denmark",
+      employeeCount: 2200,
+      revenue: 600000000,
+      description: "Deutsche Börse company. SimCorp Dimension IBOR platform.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      name: "State Street Global Advisors",
+      industry: "Asset Management",
+      website: "https://ssga.com",
+      phone: "+1-617-786-3000",
+      email: "institutional@ssga.com",
+      address: "One Lincoln Street",
+      city: "Boston",
+      state: "MA",
+      zipCode: "02111",
+      country: "USA",
+      employeeCount: 2500,
+      revenue: 2900000000,
+      description: "Third largest asset manager globally. $4.1 trillion AUM. SPDR ETF provider.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      name: "Northern Trust Asset Management",
+      industry: "Wealth Management",
+      website: "https://northerntrust.com",
+      phone: "+1-312-630-6000",
+      email: "am-solutions@ntrs.com",
+      address: "50 South LaSalle Street",
+      city: "Chicago",
+      state: "IL",
+      zipCode: "60603",
+      country: "USA",
+      employeeCount: 22000,
+      revenue: 6500000000,
+      description: "Leading custodian and asset servicer. $1.4 trillion AUM. Evaluating SimCorp.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      name: "Temenos",
+      industry: "FinTech - Core Banking",
+      website: "https://temenos.com",
+      phone: "+41-22-708-1150",
+      email: "sales@temenos.com",
+      address: "2 Rue de l'Ecole-de-Chimie",
+      city: "Geneva",
+      state: "",
+      zipCode: "1205",
+      country: "Switzerland",
+      employeeCount: 7500,
+      revenue: 850000000,
+      description: "Banking software leader. Temenos Wealth for private banking.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ]
+
+  const insertedCompanies = await db
+    .insert(companiesTable)
+    .values(companies)
+    .returning()
+
+  console.log(`Created ${insertedCompanies.length} companies`)
+
+  // Create contacts - Key decision makers at financial institutions
+  const contacts = [
+    {
+      id: generateId(),
+      firstName: "Robert",
+      lastName: "Kapito",
+      email: "r.kapito@blackrock.com",
+      phone: "+1-212-810-5301",
+      jobTitle: "President & COO",
+      companyId: insertedCompanies[0].id,
+      city: "New York",
+      state: "NY",
+      country: "USA",
+      notes: "Key decision maker for technology investments. Met at SIBOS 2024.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      firstName: "Sarah",
+      lastName: "Chen",
+      email: "s.chen@blackrock.com",
+      phone: "+1-212-810-5450",
+      jobTitle: "Head of Investment Technology",
+      companyId: insertedCompanies[0].id,
+      city: "New York",
+      state: "NY",
+      country: "USA",
+      notes: "Aladdin platform owner. Interested in data integration solutions.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      firstName: "Timothy",
+      lastName: "Buckley",
+      email: "t.buckley@vanguard.com",
+      phone: "+1-610-669-1100",
+      jobTitle: "CEO",
+      companyId: insertedCompanies[1].id,
+      city: "Malvern",
+      state: "PA",
+      country: "USA",
+      notes: "Championing digital transformation initiatives.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      firstName: "Marcus",
+      lastName: "Weber",
+      email: "m.weber@ubs.com",
+      phone: "+41-44-234-2222",
+      jobTitle: "Global Head of WM Technology",
+      companyId: insertedCompanies[2].id,
+      city: "Zurich",
+      state: "ZH",
+      country: "Switzerland",
+      notes: "Leading Charles River implementation. Budget approved for 2025.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      firstName: "Jennifer",
+      lastName: "Mitchell",
+      email: "j.mitchell@crd.com",
+      phone: "+1-781-622-1100",
+      jobTitle: "VP Sales - EMEA",
+      companyId: insertedCompanies[3].id,
+      city: "London",
+      state: "",
+      country: "UK",
+      notes: "Partner contact for implementation referrals.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      firstName: "Henrik",
+      lastName: "Andersen",
+      email: "h.andersen@simcorp.com",
+      phone: "+45-35-44-88-50",
+      jobTitle: "Chief Product Officer",
+      companyId: insertedCompanies[4].id,
+      city: "Copenhagen",
+      state: "",
+      country: "Denmark",
+      notes: "Partnership discussion ongoing for SimCorp Dimension integration.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      firstName: "Michael",
+      lastName: "Rodriguez",
+      email: "m.rodriguez@ssga.com",
+      phone: "+1-617-786-3100",
+      jobTitle: "CTO",
+      companyId: insertedCompanies[5].id,
+      city: "Boston",
+      state: "MA",
+      country: "USA",
+      notes: "Evaluating cloud-native solutions. AWS preferred.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      firstName: "Patricia",
+      lastName: "Sullivan",
+      email: "p.sullivan@ntrs.com",
+      phone: "+1-312-630-6100",
+      jobTitle: "Head of Asset Management Operations",
+      companyId: insertedCompanies[6].id,
+      city: "Chicago",
+      state: "IL",
+      country: "USA",
+      notes: "SimCorp evaluation lead. RFP closing Q1 2025.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ]
+
+  const insertedContacts = await db
+    .insert(contactsTable)
+    .values(contacts)
+    .returning()
+
+  console.log(`Created ${insertedContacts.length} contacts`)
+
+  // Create deals - Consulting engagements and system implementations
+  const deals = [
+    {
+      id: generateId(),
+      title: "BlackRock - Data Integration Strategy",
+      value: 2500000,
+      stage: "negotiation",
+      probability: 75,
+      expectedCloseDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000),
+      companyId: insertedCompanies[0].id,
+      contactId: insertedContacts[1].id,
+      description: "Strategic consulting for Aladdin data integration with third-party systems. Includes API design and implementation roadmap.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      title: "Vanguard - OMS Vendor Selection",
+      value: 1800000,
+      stage: "proposal",
+      probability: 50,
+      expectedCloseDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      companyId: insertedCompanies[1].id,
+      contactId: insertedContacts[2].id,
+      description: "Advisory services for Order Management System vendor selection. Evaluating Charles River, SimCorp, and Bloomberg AIM.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      title: "UBS - Charles River Implementation Support",
+      value: 4200000,
+      stage: "closed",
+      probability: 100,
+      expectedCloseDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
+      actualCloseDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
+      companyId: insertedCompanies[2].id,
+      contactId: insertedContacts[3].id,
+      description: "18-month implementation support for Charles River IMS rollout across EMEA and APAC regions.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      title: "Northern Trust - SimCorp Dimension Migration",
+      value: 3500000,
+      stage: "qualification",
+      probability: 35,
+      expectedCloseDate: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
+      companyId: insertedCompanies[6].id,
+      contactId: insertedContacts[7].id,
+      description: "Program management for legacy system migration to SimCorp Dimension. Multi-year engagement.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      title: "SSGA - Cloud Transformation Assessment",
+      value: 750000,
+      stage: "prospecting",
+      probability: 20,
+      expectedCloseDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
+      companyId: insertedCompanies[5].id,
+      contactId: insertedContacts[6].id,
+      description: "Assessment of current infrastructure and roadmap for AWS cloud migration. Focus on trading systems.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      title: "SimCorp Partnership - Integration Framework",
+      value: 500000,
+      stage: "negotiation",
+      probability: 80,
+      expectedCloseDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      companyId: insertedCompanies[4].id,
+      contactId: insertedContacts[5].id,
+      description: "Joint development of integration accelerators for SimCorp Dimension implementations.",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ]
+
+  const insertedDeals = await db.insert(dealsTable).values(deals).returning()
+
+  console.log(`Created ${insertedDeals.length} deals`)
+
+  // Create activities - Client interactions and follow-ups
+  const activities = [
+    {
+      id: generateId(),
+      type: "meeting",
+      subject: "BlackRock Architecture Review",
+      description: "Workshop to review current Aladdin integration architecture and identify improvement opportunities.",
+      contactId: insertedContacts[1].id,
+      companyId: insertedCompanies[0].id,
+      dealId: insertedDeals[0].id,
+      dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      type: "call",
+      subject: "Vanguard OMS Requirements Call",
+      description: "Discovery call to understand detailed requirements for OMS evaluation criteria.",
+      contactId: insertedContacts[2].id,
+      companyId: insertedCompanies[1].id,
+      dealId: insertedDeals[1].id,
+      dueDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      completedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      type: "email",
+      subject: "UBS Implementation Milestone Report",
+      description: "Sent monthly progress report for Charles River implementation Phase 2.",
+      contactId: insertedContacts[3].id,
+      companyId: insertedCompanies[2].id,
+      dealId: insertedDeals[2].id,
+      dueDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+      completedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      type: "task",
+      subject: "Prepare Northern Trust RFP Response",
+      description: "Complete technical response section for SimCorp migration RFP. Due by EOW.",
+      contactId: insertedContacts[7].id,
+      companyId: insertedCompanies[6].id,
+      dealId: insertedDeals[3].id,
+      dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      type: "note",
+      subject: "SSGA Meeting Notes",
+      description: "CTO interested in containerized solutions. AWS commitment already in place. Need to align proposal with their cloud strategy.",
+      contactId: insertedContacts[6].id,
+      companyId: insertedCompanies[5].id,
+      dealId: insertedDeals[4].id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      type: "meeting",
+      subject: "SimCorp Partnership Negotiation",
+      description: "Final partnership terms discussion with Henrik. Revenue share model to be finalized.",
+      contactId: insertedContacts[5].id,
+      companyId: insertedCompanies[4].id,
+      dealId: insertedDeals[5].id,
+      dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: generateId(),
+      type: "call",
+      subject: "Charles River Partner Sync",
+      description: "Monthly partner call with Jennifer to discuss pipeline and implementation support opportunities.",
+      contactId: insertedContacts[4].id,
+      companyId: insertedCompanies[3].id,
+      dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ]
+
+  const insertedActivities = await db
+    .insert(activitiesTable)
+    .values(activities)
+    .returning()
+
+  console.log(`Created ${insertedActivities.length} activities`)
+
+  console.log("Database seeded successfully with Liqueo financial services data!")
+}
+
+seed()
+  .then(() => {
+    console.log("Seed completed")
+    process.exit(0)
+  })
+  .catch((error) => {
+    console.error("Error seeding database:", error)
+    process.exit(1)
+  })
