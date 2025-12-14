@@ -1,5 +1,5 @@
-import { neon } from "@neondatabase/serverless"
-import { drizzle } from "drizzle-orm/neon-http"
+import { drizzle } from "drizzle-orm/postgres-js"
+import postgres from "postgres"
 import {
   companiesTable,
   contactsTable,
@@ -14,6 +14,6 @@ const schema = {
   activities: activitiesTable,
 }
 
-const sql = neon(process.env.DATABASE_URL || "postgresql://dummy:dummy@localhost:5432/dummy") as any
+const client = postgres(process.env.DATABASE_URL || "postgresql://dummy:dummy@localhost:5432/dummy")
 
-export const db = drizzle(sql, { schema })
+export const db = drizzle(client, { schema })

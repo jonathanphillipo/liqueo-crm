@@ -1,4 +1,4 @@
-import { pgTable, text, integer, timestamp, uuid } from "drizzle-orm/pg-core"
+import { pgTable, text, integer, bigint, timestamp, uuid } from "drizzle-orm/pg-core"
 
 export const companiesTable = pgTable("companies", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -13,7 +13,7 @@ export const companiesTable = pgTable("companies", {
   zipCode: text("zip_code"),
   country: text("country"),
   employeeCount: integer("employee_count"),
-  revenue: integer("revenue"),
+  revenue: bigint("revenue", { mode: "number" }),
   description: text("description"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
