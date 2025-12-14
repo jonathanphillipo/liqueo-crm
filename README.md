@@ -43,18 +43,36 @@ npm install
 
 ### 3. Set up the database
 
+**Option A: Use Neon (Recommended - Same as Production)**
+
 1. Create a free PostgreSQL database at [neon.tech](https://neon.tech)
 2. Copy your connection string
 3. Create a `.env.local` file:
+
+```bash
+# Create the env file
+cp .env.example .env.local
+```
+
+Edit `.env.local`:
 
 ```env
 DATABASE_URL="postgresql://user:password@host/database?sslmode=require"
 ```
 
-### 4. Push the schema and seed data
+**Option B: Use Local SQLite (For Offline Development)**
+
+```env
+DATABASE_URL="file:./dev.db"
+```
+
+### 4. Initialize the database
 
 ```bash
+# Push schema to database
 npm run db:push
+
+# Seed with sample data
 npm run db:seed
 ```
 
@@ -65,6 +83,13 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see the app.
+
+### Local Development Notes
+
+- **Database URL Required**: The app requires `DATABASE_URL` in `.env.local`
+- **Production vs Local**: Use the same Neon database for consistency
+- **Build Errors**: ECONNRESET errors during build are normal (dummy DB URL used)
+- **Hot Reload**: Changes are reflected immediately with Next.js 15
 
 ## Deploying to Vercel
 
