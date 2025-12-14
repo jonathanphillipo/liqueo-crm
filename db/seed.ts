@@ -14,7 +14,7 @@ async function seed() {
     process.exit(1)
   }
 
-  const sql = neon(DATABASE_URL)
+  const sql = neon(DATABASE_URL) as any
   const db = drizzle(sql)
 
   console.log("🌱 Seeding database...")

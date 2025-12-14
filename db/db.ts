@@ -14,6 +14,6 @@ const schema = {
   activities: activitiesTable,
 }
 
-const sql = neon(process.env.DATABASE_URL!)
+const sql = neon(process.env.DATABASE_URL || "postgresql://dummy:dummy@localhost:5432/dummy") as any
 
 export const db = drizzle(sql, { schema })
